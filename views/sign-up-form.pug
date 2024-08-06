@@ -1,0 +1,15 @@
+extends layout 
+
+block content 
+    form
+        div.mb-3
+          label(for="username" class="form-label")
+          input(type="text" class="form-control" placeholder="Username")
+        div.mb-3
+          label(for="password" class="form-label")
+          input.form-control(type="password" name="password" placeholder="Password")
+        div.mb-3
+          label.form-label(for="confirm-password")
+          input.form-control(type="password" name="confirm-password" placeholder="Confirm Password")  
+        div.mb-3
+          button.btn.btn-primary Submit
