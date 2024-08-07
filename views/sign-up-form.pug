@@ -1,10 +1,17 @@
 extends layout 
 
 block content 
-    form
+    h3= subtitle
+    form(action="" method="post")
         div.mb-3
           label(for="username" class="form-label")
-          input(type="text" class="form-control" placeholder="Username")
+          input(type="text" class="form-control" placeholder="Username" name="username")
+        div.mb-3
+          label(for="f_name" class="form-label")
+          input(type="text" class="form-control" placeholder="First Name" name="f_name")
+        div.mb-3
+          label(for="l_name" class="form-label")
+          input(type="text" class="form-control" placeholder="Last Name" name="l_name")
         div.mb-3
           label(for="password" class="form-label")
           input.form-control(type="password" name="password" placeholder="Password")
@@ -13,3 +20,8 @@ block content
           input.form-control(type="password" name="confirm-password" placeholder="Confirm Password")  
         div.mb-3
           button.btn.btn-primary Submit
+    hr
+    if errors 
+      for error in errors 
+        p= error.msg
+    

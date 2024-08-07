@@ -34,7 +34,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await prisma.user.findFirst({
-      where: { username: username },
+      where: { id: id },
     });
     done(null, user);
   } catch (err) {
