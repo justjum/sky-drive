@@ -19,4 +19,6 @@ router.get("/login-error", controller.logInErrorGet);
 
 router.post("/upload", upload.single("file"), controller.uploadFile);
 
+router.get("/drive", controller.driveGet);
+
 module.exports = router;

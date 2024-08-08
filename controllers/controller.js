@@ -109,12 +109,33 @@ exports.uploadFile = async function (req, res, next) {
   res.redirect("/");
 };
 
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "/uploads");
-//   },
-//   filename: function (req, file, cb) {
-//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-//     cb(null, file.fieldname + "-" + uniqueSuffix);
-//   },
-// });
+exports.driveGet = async function (req, res, next) {
+  const folders = await prisma.folder.findMany({
+    where: { userId: req.user.id },
+  });
+
+  for (let x = 0; x < folders.length; x++) {
+    if (folders[x].parentId == req.query.id) {
+      folders[x].isVisible = true;
+    } else {
+      folders[x].isVisible = false;
+    }
+  }
+  console.log(req.query.id);
+  let currentFolder = "";
+  if (req.query.id != "") {
+    console.log(req.query.id);
+    const id = parseInt(req.query.id);
+    currentFolder = await prisma.folder.findFirst({
+      where: { id: id },
+    });
+  }
+
+  res.render("drive", {
+    title: "Sky Drive",
+    subtitle: "Your Sky",
+    user: req.user,
+    folders: folders,
+    currentFolder: currentFolder,
+  });
+};

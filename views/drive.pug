@@ -1,0 +1,21 @@
+extends layout 
+
+block content 
+
+  div.container
+
+    h3 #{subtitle}
+    h4 /#{currentFolder.name}
+    form(action="" method='get')
+      input.form-control(type="hidden" name="id" value=currentFolder.parentId)
+      input(type="submit" value="UP") 
+    
+    for folder in folders 
+        if folder.isVisible
+            form(action="" method='get')
+              input.form-control(type="hidden" name="id" value=folder.id) 
+              input(type="submit" value=folder.name)
+
+            p #{folder.parentId}  
+            p #{folder.userId}
+        
