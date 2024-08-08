@@ -1,7 +1,15 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div.container
+    if (user)
+      h3 Welcome #{user.f_name}. We've missed you.
+      hr
+      form(action="/upload" method="post" enctype="multipart/form-data")
+        input(type="file" name="file" id="file" required)
+        input(type="submit") 
 
-  a(href="/sign-up") Sign Up
+    else
+      h3 Welcome. Login for access or sign up below.
+
+      a(href="/sign-up") Sign Up

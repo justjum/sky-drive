@@ -23,6 +23,15 @@ exports.logInErrorGet = async function (req, res, next) {
   });
 };
 
+exports.logOut = function (req, res, next) {
+  req.logout((err) => {
+    if (err) {
+      next(err);
+    }
+    res.redirect(".");
+  });
+};
+
 exports.signUpGet = async function (req, res, next) {
   res.render("sign-up-form", {
     title: "Sky Drive",
@@ -92,3 +101,20 @@ exports.signUpPost = [
     }
   },
 ];
+
+exports.uploadFile = async function (req, res, next) {
+  console.log(req.body);
+  console.log(req.file);
+  console.log(req.file.filename);
+  res.redirect("/");
+};
+
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "/uploads");
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     cb(null, file.fieldname + "-" + uniqueSuffix);
+//   },
+// });
