@@ -1,0 +1,28 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.icon {
+  min-width: 20px;
+  max-width: 40px;
+}
+
+.hover-cursor:hover {
+  cursor: pointer;
+}
+
+.drive-name {
+  border: none;
+  background-color: rgba(255, 255, 255, 0);
+  color: #00B7FF;
+  font-size: large;
+}
+
+.cloud {
+  color: #00B7FF;
+}

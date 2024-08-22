@@ -1,0 +1,153 @@
+extends layout 
+
+block content 
+
+  div.container.mt-4
+
+    h3 #{user.f_name}'s #{subtitle}
+
+    div.container.d-flex
+      if parents 
+        for parent in parents 
+              form(action="" method='get')
+                input.form-control(type="hidden" name="id" value=parent.id) 
+                button.btn.btn-secondary(type="submit") #{parent.name}
+              button.btn.secondary /
+        button.btn.btn-secondary #{currentFolder.name}
+
+    div.container.d-flex.flex-column
+      table.table.table-hover 
+        thead 
+          tr
+            th 
+            th Name 
+            th Size
+            th Created 
+            th 
+            th 
+        tbody
+          for folder in folders 
+            tr
+              td
+                img.icon.hover-cursor(src="/images/folder-outline.svg", alt="Folder")
+              td
+                form(action="" method='get')
+                  input.form-control(type="hidden" name="id" value=folder.id) 
+                  input.m-2.drive-name.text-dark(type="submit" value=`${folder.name}`) 
+              td 
+              td.fs-6= folder.created.toDateString()
+              td 
+                img.icon.hover-cursor(src="/images/folder-edit-outline.svg", alt=`Edit Folder ${folder.name}` data-bs-toggle="modal" data-bs-target="#update-modal" data-bs-whomever=`${folder.id}` data-bs-current=`${folder.name}` data-bs-parent=`${currentFolder.id}` id="update-folder")
+              td
+                img.icon.hover-cursor(src="/images/delete-outline.svg", alt=`Delete Folder ${folder.name}` data-bs-toggle="modal" data-bs-target="#delete-modal" data-bs-whomever=`${folder.id}` data-bs-parent=`${currentFolder.id}` id="delete-folder")
+
+          for file in files 
+            tr 
+              td
+                img.icon.hover-cursor(src="/images/file-outline.svg", alt="File")
+              td 
+                input.drive-name.m-2(type="submit" value=`${file.name}` data-bs-toggle="modal" data-bs-target="#file-link-modal" data-bs-whomever=`${file.id}` data-bs-href=`${file.href}` data-bs-parent=`${currentFolder.id}` id="file") 
+              td.fs-6 #{(file.size>1000000) ? `${file.size/1000000} MB` : `${file.size/1000} kB`}
+              td.fs-6= file.created.toDateString()
+              td
+                img.icon.hover-cursor(src="/images/file-edit-outline.svg", alt=`Edit file ${file.name}` data-bs-toggle="modal" data-bs-target="#update-modal" data-bs-whomever=`${file.id}` data-bs-current=`${file.name}` data-bs-parent=`${currentFolder.id}` id="update-file")  
+              td
+                img.icon.hover-cursor(src="/images/delete-outline.svg", alt=`Delete file ${file.name}` data-bs-toggle="modal" data-bs-target="#delete-modal" data-bs-whomever=`${file.id}` data-bs-parent=`${currentFolder.id}` id="delete-file")
+
+    div.container.d-flex.justify-content-around
+      div.hover-cursor(data-bs-toggle="modal" data-bs-target="#folder-modal" id="new-folder")
+        h5 New Folder
+        img.icon.hover-cursor(src="/images/folder-plus-outline.svg", alt="Add Folder") 
+      div.hover-cursor(data-bs-toggle="modal" data-bs-target="#file-modal" id="add-file")
+        h5.link-primary New File
+        img.icon(src="/images/file-plus-outline.svg", alt="Add File")
+
+
+
+    div.modal.fade(tabindex="-1" id="folder-modal" data-bs-backdrop="static" aria-labelledby="folderModalLabel" aria-hidden="true") 
+      div.modal-dialog
+        div.modal-content
+          div.modal-header
+            h5.modal-title Add Folder 
+            button.btn.btn-close(data-bs-dismiss="modal" aria-label="Close")
+          div.modal-body
+            form(action="/drive/create-folder", method="post")
+              input.form-control(type="text" value=`${currentFolder.id}` name='folderId' hidden)
+              input.form-control.mb-2(type="text" name="newFolder" id="newFolder" placeholder="Folder Name")
+              button.btn.btn-primary Create
+          div.modal-footer
+            button.btn.btn-secondary(data-bs-dismiss="modal") Close  
+    
+    div.modal.fade(tabindex="-1" id="file-modal" data-bs-backdrop="static" aria-labelledby="fileModalLabel" aria-hidden="true") 
+      div.modal-dialog
+        div.modal-content
+          div.modal-header
+            h5.modal-title Add File
+            button.btn.btn-close(data-bs-dismiss="modal" aria-label="Close")
+          div.modal-body
+            form(action="/drive/upload" method="post" enctype="multipart/form-data")
+              input.form-control(type="text" value=`${currentFolder.id}` name='folderId' hidden)
+              input.form-control.mb-2(type="file" name="file" id="file" required)
+              button.mb-2.btn.btn-primary(type="submit" data-bs-dismiss="modal") Upload
+              p.fs-6(style="text-align:center") Max upload size 2MB
+          div.modal-footer
+            button.btn.btn-secondary(data-bs-dismiss="modal") Close  
+    
+    div.modal.fade(tabindex="-1" id="update-modal" data-bs-backdrop="static" aria-labelledby="updateModal" aria-hidden="true")
+      div.modal-dialog
+        div.modal-content
+          div.modal-header
+            h5.modal-title  
+            button.btn.btn-close(data-bs-dismiss="modal" aria-label="Close")
+          div.modal-body
+            p.modal-message #[strong ]
+            form.update-form(action="" method="post")
+              input.form-control.modal-input.modal-id(type="text"  name='id' hidden)
+              input.form-control.modal-input.modal-parent(type="text"  name='parent' hidden)
+              input.form-control.modal-input.modal-value(type="text" name='value')
+              button.btn.btn-primary(type="submit") Save update!
+          div.modal-footer
+            button.btn.btn-secondary(data-bs-dismiss="modal") Close  
+
+    div.modal.fade(tabindex="-1" id="delete-modal" data-bs-backdrop="static" aria-labelledby="deleteModal" aria-hidden="true")
+      div.modal-dialog
+        div.modal-content
+          div.modal-header
+            h5.modal-title  
+            button.btn.btn-close(data-bs-dismiss="modal" aria-label="Close")
+          div.modal-body
+            p.modal-message #[strong ]
+            form.delete-form(action="" method="post")
+              input.form-control.modal-input.modal-id(type="text"  name='id' hidden)
+              input.form-control.modal-input.modal-parent(type="text"  name='parent' hidden)
+              button.btn.btn-primary(type="submit") Sure am!
+          div.modal-footer
+            button.btn.btn-secondary(data-bs-dismiss="modal") Close  
+
+    div.modal(tabindex="-1" id="file-link-modal" data-bs-backdrop="static" aria-labelledby="fileLinkModal" aria-hidden="true")
+      div.modal-dialog
+        div.modal-content
+          div.modal-header
+            h5.modal-title  
+            button.btn.btn-close(data-bs-dismiss="modal" aria-label="Close")
+          div.modal-body
+            img.modal-image(src="", alt="")
+            a.modal-link(href="" value="this") 
+          div.modal-footer
+            button.btn.btn-secondary(data-bs-dismiss="modal") Close  
+
+
+
+  
+  
+
+
+        
+
+
+
+          
+
+
+
+        

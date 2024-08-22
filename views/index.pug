@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  div.container.mt-4(style="text-align: center")
+    if (user)
+      h3 Welcome #{user.f_name}. We've missed you.
+      div.container(style="text-align: center;")
+        a(href="/drive") 
+          img.w-25(src="/images/cloud-outline.svg", alt="")
+          h2 Let's Fly 
+
+    else
+      p.fs-3.mb-5 Welcome to Sky Drive. Your local drive in the sky.
+      p.fs-4 Login for access or sign up below.
+
+      a.fs-3.mt-5(href="/sign-up") Sign Up

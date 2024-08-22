@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id @default(uuid()) @db.Uuid
+  username String   @unique
+  f_name   String
+  l_name   String
+  password String
+  Folder   Folder[]
+  File     File[]
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
+model Folder {
+  id       String   @id @default(uuid()) @db.Uuid
+  name     String
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String   @db.Uuid
+  parent   Folder?  @relation("DirectoryTree", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId String?  @db.Uuid
+  children Folder[] @relation("DirectoryTree")
+  type     String   @default("Folder")
+  created  DateTime @default(now()) @db.Date
+  File     File[]
+}
+
+model File {
+  id       String   @id @default(uuid()) @db.Uuid
+  name     String
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String   @db.Uuid
+  Folder   Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId String   @db.Uuid
+  created  DateTime @default(now()) @db.Date
+  type     String   @default("File")
+  href     String
+  publicId String
+  size     Float    @default(0)
+}
