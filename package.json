@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
     "serverstart": "DEBUG=sky-drive:* npm run devstart",
-    "migrate:postgres": "dotenv -e .env.prod -- npx prisma migrate deploy"
+    "migrate:postgres": "dotenv -e .env-prod -- npx prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^5.18.0",
